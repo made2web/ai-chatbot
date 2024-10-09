@@ -1,4 +1,5 @@
 export const BotIcon = () => {
+  return <img src="/images/icon.png" alt="logo" />;
   return (
     <svg
       height="16"

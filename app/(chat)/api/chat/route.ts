@@ -26,10 +26,6 @@ export async function POST(request: Request) {
 
             ALWAYS answer in Portuguese from Portugal.
 
-            I would like you to give the awnser in a markdown format first and only then call the tools.
-            if you need to call the tools, call them in the end of the answer.
-
-            If you called a tool, DO NOT iterate one more step, unless is 'getInformation'.
       `,
     messages: convertToCoreMessages(messages),
     experimental_providerMetadata: {
@@ -51,7 +47,7 @@ export async function POST(request: Request) {
       },
       absenceRegistration: tool({
         description:
-          "DO NOT send an assistant message after this tool is called. Form to register a new absence for the user. Even if the user does not fill in any fields, we must call the function. We should never show a message saying the registration is done. If this tool is called, we should say that we have started the process and the user must confirm the details.",
+          "Form to register a new absence for the user. Even if the user does not fill in any fields, we must call the function. We should never show a message saying the registration is done. If this tool is called, we should say that we have started the process and the user must confirm the details. Don't say that you've sent the email or you did another action to the human resources department.",
         parameters: z.object({
           start_date: z.string().optional(),
           end_date: z.string().optional(),
@@ -73,7 +69,7 @@ export async function POST(request: Request) {
       }),
       readInvoice: {
         description:
-          "Read the user's invoice/expense.  The user must verify the extracted information and submit the invoice.",
+          "Read the user's invoice/expense.  The user must verify the extracted information and submit the invoice. Dont say that you've sent the invoice to the human resources department or any other action",
         parameters: z.object({
           type: z
             .enum(["gasolina", "hotel", "software", "outro"])
@@ -100,7 +96,7 @@ export async function POST(request: Request) {
       },
       sendHRContactForm: {
         description:
-          "Show to the user the contact form to the human resources department from him to validate the fields and for him to send the email. Don't mention 'Made2Web' on the extracted data.",
+          "Show to the user the contact form to the human resources department from him to validate the fields and for him to send the email. Don't mention 'Made2Web' on the extracted data and don't say that you've sent the email to the human resources department.",
         parameters: z.object({
           assunto: z.string().describe("Subject of the email.").optional(),
           message: z
