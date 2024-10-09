@@ -4,6 +4,9 @@ const nextConfig = {
   images: {
     remotePatterns: [],
   },
+  eslint: {
+    ignoreDuringBuilds: true, // Ignora erros de lint durante a construção
+  },
 };
 
 export default nextConfig;

@@ -7,11 +7,12 @@ import { ReactNode } from "react";
 import { BotIcon, UserIcon } from "./icons";
 import { Markdown } from "./markdown";
 import { PreviewAttachment } from "./preview-attachment";
-import { Weather } from "./weather";
-import { AbsenceRegistration } from "./rh/rh-absence-registration";
+
 import { AbsenceConfirmation } from "./rh/rh-absence-confirmation";
-import ManageExpenses from "./rh/manage-expenses";
+import { AbsenceRegistration } from "./rh/rh-absence-registration";
 import { ContactForm } from "./rh/form-contact";
+import ManageExpenses from "./rh/manage-expenses";
+import { Weather } from "./weather";
 
 export const Message = ({
   role,
