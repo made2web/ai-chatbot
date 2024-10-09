@@ -12,7 +12,7 @@ export const { auth } = NextAuth(authConfig);
 
 export async function botProtectionMiddleware(
   request: NextRequest,
-  event: NextFetchEvent,
+  event: NextFetchEvent
 ) {
   if (["POST", "DELETE"].includes(request.method)) {
     const realIp = request.headers.get("x-real-ip") || "no-ip";
@@ -34,8 +34,8 @@ export async function botProtectionMiddleware(
 }
 
 export async function middleware(request: NextRequest, event: NextFetchEvent) {
-  const response = await botProtectionMiddleware(request, event);
-  if (response) return response;
+  // const response = await botProtectionMiddleware(request, event);
+  // if (response) return response;
 
   // @ts-expect-error type mismatch
   return auth(request, event);
