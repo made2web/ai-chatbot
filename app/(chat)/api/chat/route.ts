@@ -19,28 +19,17 @@ export async function POST(request: Request) {
     model: customModel,
     system: `\
             You are a friendly human resources assistant at Made2Web company, helping employees answer company-related questions and perform tasks like booking vacations or submitting expense receipts.
-
-            TOOLS:
-            - get_information: Query the knowledge base.
-            - absenceRegistration: Register a new absence for the user.
-            - readInvoice: Read the user's invoice/expense.
-            - sendHRContactForm: Send the contact form to the human resources department.
-
-            If the user is looking for information, call \`get_information\` to query the knowledge base.
-            If no relevant information is found:
-            1) respond politely that you do not know the answer and to contact the human resources department
-            2) Call the tool \`sendHRContactForm\`.
-
-            If the user wants to register an absence (vacation, parental leave, sick leave, justified absence, or unjustified absence), call \`absenceRegistration\` to start the absence registration process. You should call the function even if the user does not fill in any fields.
-            If the user wants to submit expenses, call \`readInvoice\` to handle the expense submission.
-
-            You must always respond in European Portuguese.
-            Only answer questions using information from tool calls.
-            
             
             If no relevant information is found in the tool calls:
             1) respond politely that you do not know the answer and to contact the human resources department
             2) Call the tool \`sendHRContactForm\`.
+
+            ALWAYS answer in Portuguese from Portugal.
+
+            I would like you to give the awnser in a markdown format first and only then call the tools.
+            if you need to call the tools, call them in the end of the answer.
+
+            If you called a tool, DO NOT iterate one more step, unless is 'getInformation'.
       `,
     messages: convertToCoreMessages(messages),
     experimental_providerMetadata: {
@@ -48,12 +37,13 @@ export async function POST(request: Request) {
         selection: selectedFilePathnames,
       },
     },
-    maxSteps: 3,
+    maxSteps: 2,
     maxRetries: 2,
     temperature: 0,
+
     tools: {
       getInformation: {
-        description: `Retrieve information from your knowledge base to answer questions.`,
+        description: `Retrieve information from your knowledge base to answer questions. Generate a markdown response from the given results`,
         parameters: z.object({
           question: z.string().describe("the question the user wants to know"),
         }),
@@ -61,7 +51,7 @@ export async function POST(request: Request) {
       },
       absenceRegistration: tool({
         description:
-          "Form to register a new absence for the user. Even if the user does not fill in any fields, we must call the function. We should never show a message saying the registration is done. If this tool is called, we should say that we have started the process and the user must confirm the details.",
+          "DO NOT send an assistant message after this tool is called. Form to register a new absence for the user. Even if the user does not fill in any fields, we must call the function. We should never show a message saying the registration is done. If this tool is called, we should say that we have started the process and the user must confirm the details.",
         parameters: z.object({
           start_date: z.string().optional(),
           end_date: z.string().optional(),
@@ -81,23 +71,9 @@ export async function POST(request: Request) {
           absence_type,
         }),
       }),
-      absenceConfirmation: {
-        description:
-          "Confirm the absence details for the user after registration.",
-        parameters: z.object({
-          start_date: z.string(),
-          end_date: z.string(),
-          absence_type: z.string(),
-        }),
-        execute: async ({ start_date, end_date, absence_type }) => ({
-          start_date,
-          end_date,
-          absence_type,
-        }),
-      },
       readInvoice: {
         description:
-          "Read the user's invoice/expense. When this tool is called we render a custom UI so the user can confirm the data in the fields. We didnt submit nothing. The user must verify and submit the invoice.",
+          "Read the user's invoice/expense.  The user must verify the extracted information and submit the invoice.",
         parameters: z.object({
           type: z
             .enum(["gasolina", "hotel", "software", "outro"])
@@ -123,7 +99,8 @@ export async function POST(request: Request) {
         }),
       },
       sendHRContactForm: {
-        description: "Send the contact form to the human resources department.",
+        description:
+          "Show to the user the contact form to the human resources department from him to validate the fields. Don't mention 'Made2Web' on the extracted data.",
         parameters: z.object({
           assunto: z.string().describe("Subject of the email.").optional(),
           message: z

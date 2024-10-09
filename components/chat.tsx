@@ -27,9 +27,9 @@ export function Chat({
       body: { id, selectedFilePathnames },
       initialMessages,
       onFinish: () => {
-        if (user) {
-          window.history.replaceState({}, "", `/${id}`);
-        }
+        // if (user) {
+        //   window.history.replaceState({}, "", `/${id}`);
+        // }
       },
     });
 
@@ -38,7 +38,7 @@ export function Chat({
 
   const [attachments, setAttachments] = useState<Array<Attachment>>([]);
 
-  console.log(messages);
+  console.log("messages", messages);
 
   return (
     <div className="flex flex-row justify-center pb-4 md:pb-8 h-dvh bg-background">

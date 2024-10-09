@@ -28,7 +28,7 @@ export const Message = ({
   append: (message: MessageType) => void;
 }) => {
   //Se nao tiver content e só tiver uma tool invocation e for a getInformation, então não renderizar nada e o estado diferente de result
-  console.log("aqui", content, toolInvocations);
+
   if (
     !content &&
     toolInvocations &&
