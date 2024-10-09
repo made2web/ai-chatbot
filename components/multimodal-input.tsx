@@ -22,12 +22,12 @@ const suggestedActions = [
   {
     title: "Quero agendar",
     label: "as minhas férias",
-    action: "Quero agendar as minhas férias de 10 a 20 de outubro de 2025",
+    action: "Quero agendar as minhas férias de 10 a 20 de Março de 2025",
   },
   {
-    title: "Why do",
-    label: "developers use Next.js?",
-    action: "why do developers use Next.js?",
+    title: "Como posso submeter",
+    label: "uma despesa de deslocação?",
+    action: "Como posso submeter uma despesa de deslocação?",
   },
 ];
 

@@ -14,33 +14,13 @@ export const Overview = () => {
       transition={{ delay: 0.5 }}
     >
       <div className="border rounded-lg p-6 flex flex-col gap-4 text-zinc-500 text-sm dark:text-zinc-400 dark:border-zinc-700">
-        <p className="flex flex-row justify-center gap-4 items-center text-zinc-900 dark:text-zinc-50">
-          <VercelIcon />
-          <span>+</span>
-          <MessageIcon />
-          <span>+</span>
-          <LogoOpenAI />
-        </p>
+        <h2 className="text-lg font-semibold">Assistente RH Made2Web</h2>
         <p>
-          This is an open source Chatbot template powered by the OpenAI gpt-4o
-          model built with Next.js and the AI SDK by Vercel. It uses the{" "}
-          <code className="rounded-md bg-muted px-1 py-0.5">streamText</code>{" "}
-          function in the server and the{" "}
-          <code className="rounded-md bg-muted px-1 py-0.5">useChat</code> hook
-          on the client to create a seamless chat experience.
+          Olá! Sou o assistente virtual da equipa de gestão de recursos humanos
+          da Made2Web. Estou aqui para ajudar nos procedimentos administrativos,
+          como marcar férias, submeter despesas, etc.
         </p>
-        <p>
-          {" "}
-          You can learn more about the AI SDK by visiting the{" "}
-          <Link
-            className="text-blue-500 dark:text-blue-400"
-            href="https://sdk.vercel.ai/docs"
-            target="_blank"
-          >
-            Docs
-          </Link>
-          .
-        </p>
+        <p>Comece por fazer uma pergunta.</p>
       </div>
     </motion.div>
   );
