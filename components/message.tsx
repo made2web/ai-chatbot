@@ -9,9 +9,12 @@ import { Markdown } from "./markdown";
 import { PreviewAttachment } from "./preview-attachment";
 
 import { AbsenceConfirmation } from "./rh/rh-absence-confirmation";
-import { AbsenceRegistration } from "./rh/rh-absence-registration";
-import { ContactForm } from "./rh/form-contact";
-import ManageExpenses from "./rh/manage-expenses";
+import {
+  AbsenceRegistration,
+  AbsenceRegistrationSkeleton,
+} from "./rh/rh-absence-registration";
+import { ContactForm, ContactFormSkeleton } from "./rh/form-contact";
+import ManageExpenses, { ManageExpensesSkeleton } from "./rh/manage-expenses";
 import { Weather } from "./weather";
 
 export const Message = ({
@@ -67,15 +70,10 @@ export const Message = ({
 
                 return (
                   <div key={toolCallId}>
-                    {toolName === "getWeather" ? (
-                      <Weather weatherAtLocation={result} />
-                    ) : null}
                     {toolName === "absenceRegistration" ? (
-                      <AbsenceRegistration summary={result} append={append} />
+                      <AbsenceRegistration summary={result} />
                     ) : null}
-                    {toolName === "absenceConfirmation" ? (
-                      <AbsenceConfirmation summary={result} />
-                    ) : null}
+
                     {toolName === "readInvoice" ? (
                       <ManageExpenses summary={result} />
                     ) : null}
@@ -85,36 +83,28 @@ export const Message = ({
                         initialMessage={result.message}
                       />
                     ) : null}
-
-                    {/* {toolName === "getInformation" ? (
-                      <div>
-                        aa
-                        <Markdown>{JSON.stringify(result, null, 2)}</Markdown>
-                      </div>
-                    ) : null} */}
                   </div>
                 );
               } else {
                 return (
                   <div key={toolCallId} className="skeleton">
-                    {toolName === "getWeather" ? <Weather /> : null}
                     {toolName === "getInformation" ? (
-                      <div>A pesquisar...</div>
+                      <div className="flex flex-col space-y-2">
+                        <div className="h-4 bg-gray-300 rounded w-3/4 animate-pulse"></div>
+                        <div className="h-4 bg-gray-300 rounded w-1/2 animate-pulse"></div>
+                        <div className="h-4 bg-gray-300 rounded w-2/3 animate-pulse"></div>
+                      </div>
                     ) : null}
                     {toolName === "absenceRegistration" ? (
-                      <div>A carregar absenceRegistration...</div>
+                      // <div>A carregar absenceRegistration...</div>
+                      <AbsenceRegistrationSkeleton />
                     ) : null}
-                    {toolName === "absenceConfirmation" ? (
-                      <div>A carregar absenceConfirmation...</div>
-                    ) : null}
-                    {toolName === "sendExpenseInvoice" ? (
-                      <div>A carregar sendExpenseInvoice...</div>
-                    ) : null}
+
                     {toolName === "readInvoice" ? (
-                      <div>A carregar readInvoice...</div>
+                      <ManageExpensesSkeleton />
                     ) : null}
                     {toolName === "sendHRContactForm" ? (
-                      <div>A carregar sendHRContactForm...</div>
+                      <ContactFormSkeleton />
                     ) : null}
                   </div>
                 );

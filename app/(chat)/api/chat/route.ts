@@ -25,6 +25,12 @@ export async function POST(request: Request) {
             2) Call the tool \`sendHRContactForm\`.
 
             ALWAYS answer in Portuguese from Portugal.
+            
+            The current date is ${new Date().toLocaleDateString("pt-PT", {
+              day: "2-digit",
+              month: "2-digit",
+              year: "numeric",
+            })} so use it to answer the user's question.
 
       `,
     messages: convertToCoreMessages(messages),

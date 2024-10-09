@@ -44,7 +44,6 @@ interface AbsenceRegistrationProps {
     start_date: Date;
     end_date: Date;
   };
-  append: (message: Message) => void;
 }
 
 export function AbsenceRegistration({
@@ -53,7 +52,6 @@ export function AbsenceRegistration({
     start_date: new Date(),
     end_date: new Date(),
   },
-  append,
 }: AbsenceRegistrationProps) {
   const [date, setDate] = useState<DateRange | undefined>({
     from: summary.start_date || new Date(),
@@ -163,6 +161,27 @@ export function AbsenceRegistration({
             </Button>
           </>
         )}
+      </CardFooter>
+    </Card>
+  );
+}
+
+export function AbsenceRegistrationSkeleton() {
+  return (
+    <Card className="w-[500px]">
+      <CardHeader>
+        <div className="h-6 bg-gray-300 rounded w-1/2 animate-pulse"></div>
+        <div className="h-4 bg-gray-300 rounded w-3/4 mt-2 animate-pulse"></div>
+      </CardHeader>
+      <CardContent>
+        <div className="grid gap-2">
+          <div className="h-10 bg-gray-300 rounded w-full animate-pulse"></div>
+          <div className="h-10 bg-gray-300 rounded w-full animate-pulse"></div>
+        </div>
+      </CardContent>
+      <CardFooter className="flex justify-between">
+        <div className="h-10 bg-gray-300 rounded w-1/4 animate-pulse"></div>
+        <div className="h-10 bg-gray-300 rounded w-1/4 animate-pulse"></div>
       </CardFooter>
     </Card>
   );

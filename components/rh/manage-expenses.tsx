@@ -120,3 +120,36 @@ export default function ManageExpenses({ summary }: ManageExpensesProps) {
     </Card>
   );
 }
+
+export function ManageExpensesSkeleton() {
+  return (
+    <Card className="w-full max-w-sm">
+      <CardHeader>
+        <div className="h-6 bg-gray-300 rounded w-1/2 animate-pulse"></div>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="space-y-2">
+          <div className="h-4 bg-gray-300 rounded w-1/3 animate-pulse"></div>
+          <div className="h-10 bg-gray-300 rounded w-full animate-pulse"></div>
+        </div>
+        <div className="flex space-x-2">
+          <div className="w-1/2">
+            <div className="h-4 bg-gray-300 rounded w-1/2 animate-pulse"></div>
+            <div className="h-10 bg-gray-300 rounded w-full animate-pulse"></div>
+          </div>
+          <div className="w-1/2">
+            <div className="h-4 bg-gray-300 rounded w-1/2 animate-pulse"></div>
+            <div className="h-10 bg-gray-300 rounded w-full animate-pulse"></div>
+          </div>
+        </div>
+        <div className="space-y-2">
+          <div className="h-4 bg-gray-300 rounded w-1/3 animate-pulse"></div>
+          <div className="h-10 bg-gray-300 rounded w-full animate-pulse"></div>
+        </div>
+      </CardContent>
+      <CardFooter>
+        <div className="h-10 bg-gray-300 rounded w-full animate-pulse"></div>
+      </CardFooter>
+    </Card>
+  );
+}

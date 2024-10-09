@@ -90,3 +90,28 @@ export function ContactForm({
     </Card>
   );
 }
+
+export function ContactFormSkeleton() {
+  return (
+    <Card className="w-[500px]">
+      <CardHeader>
+        <div className="h-6 bg-gray-300 rounded w-1/2 animate-pulse"></div>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-4">
+          <div>
+            <div className="h-4 bg-gray-300 rounded w-1/3 animate-pulse"></div>
+            <div className="h-10 bg-gray-300 rounded w-full animate-pulse"></div>
+          </div>
+          <div>
+            <div className="h-4 bg-gray-300 rounded w-1/3 animate-pulse"></div>
+            <div className="h-24 bg-gray-300 rounded w-full animate-pulse"></div>
+          </div>
+        </div>
+      </CardContent>
+      <CardFooter className="flex justify-end">
+        <div className="h-10 bg-gray-300 rounded w-1/4 animate-pulse"></div>
+      </CardFooter>
+    </Card>
+  );
+}
