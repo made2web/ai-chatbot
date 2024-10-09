@@ -1,3 +1,5 @@
+import { customAlphabet } from "nanoid";
+
 interface ApplicationError extends Error {
   info: string;
   status: number;
@@ -8,7 +10,7 @@ export const fetcher = async (url: string) => {
 
   if (!res.ok) {
     const error = new Error(
-      "An error occurred while fetching the data.",
+      "An error occurred while fetching the data."
     ) as ApplicationError;
 
     error.info = await res.json();
@@ -34,3 +36,8 @@ export function generateUUID(): string {
     return v.toString(16);
   });
 }
+
+export const nanoid = customAlphabet(
+  "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
+  7
+); // 7-character random string

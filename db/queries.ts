@@ -1,14 +1,17 @@
 import { drizzle } from "drizzle-orm/postgres-js";
-import { desc, eq } from "drizzle-orm";
+import { cosineDistance, desc, gt, sql, eq } from "drizzle-orm";
 import postgres from "postgres";
 import { genSaltSync, hashSync } from "bcrypt-ts";
-import { user, chat, User } from "./schema";
+import { user, chat, User, embeddings } from "./schema";
+import { openai } from "@ai-sdk/openai";
+import { embed, embedMany } from "ai";
 
 // Optionally, if not using email/pass login, you can
 // use the Drizzle adapter for Auth.js / NextAuth
 // https://authjs.dev/reference/adapter/drizzle
 let client = postgres(`${process.env.POSTGRES_URL!}?sslmode=require`);
 let db = drizzle(client);
+const embeddingModel = openai.embedding("text-embedding-ada-002");
 
 export async function getUser(email: string): Promise<Array<User>> {
   return await db.select().from(user).where(eq(user.email, email));
@@ -65,3 +68,28 @@ export async function getChatById({ id }: { id: string }) {
   const [selectedChat] = await db.select().from(chat).where(eq(chat.id, id));
   return selectedChat;
 }
+
+export const generateEmbedding = async (value: string): Promise<number[]> => {
+  const input = value.replaceAll("\\n", " ");
+  const { embedding } = await embed({
+    model: embeddingModel,
+    value: input,
+  });
+  return embedding;
+};
+
+export const findRelevantContent = async (userQuery: string) => {
+  const userQueryEmbedded = await generateEmbedding(userQuery);
+  const similarity = sql<number>`1 - (${cosineDistance(
+    embeddings.embedding,
+    userQueryEmbedded
+  )})`;
+  const similarGuides = await db
+    .select({ name: embeddings.content, similarity })
+    .from(embeddings)
+    .where(gt(similarity, 0.5))
+    .orderBy((t) => desc(t.similarity))
+    .limit(4);
+
+  return similarGuides;
+};

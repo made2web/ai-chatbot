@@ -38,6 +38,8 @@ export function Chat({
 
   const [attachments, setAttachments] = useState<Array<Attachment>>([]);
 
+  console.log(messages);
+
   return (
     <div className="flex flex-row justify-center pb-4 md:pb-8 h-dvh bg-background">
       <div className="flex flex-col justify-between items-center gap-4">
@@ -54,6 +56,7 @@ export function Chat({
               content={message.content}
               attachments={message.experimental_attachments}
               toolInvocations={message.toolInvocations}
+              append={append}
             />
           ))}
           <div

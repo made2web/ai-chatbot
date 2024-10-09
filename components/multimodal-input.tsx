@@ -20,9 +20,9 @@ import { Textarea } from "./shadcn/textarea";
 
 const suggestedActions = [
   {
-    title: "What is",
-    label: "the meaning of life?",
-    action: "what is the meaning of life?",
+    title: "Quero agendar",
+    label: "as minhas férias",
+    action: "Quero agendar as minhas férias de 10 a 20 de outubro de 2025",
   },
   {
     title: "Why do",
@@ -51,13 +51,13 @@ export function MultimodalInput({
   messages: Array<Message>;
   append: (
     message: Message | CreateMessage,
-    chatRequestOptions?: ChatRequestOptions,
+    chatRequestOptions?: ChatRequestOptions
   ) => Promise<string | null | undefined>;
   handleSubmit: (
     event?: {
       preventDefault?: () => void;
     },
-    chatRequestOptions?: ChatRequestOptions,
+    chatRequestOptions?: ChatRequestOptions
   ) => void;
 }) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -71,7 +71,9 @@ export function MultimodalInput({
   const adjustHeight = () => {
     if (textareaRef.current) {
       textareaRef.current.style.height = "auto";
-      textareaRef.current.style.height = `${textareaRef.current.scrollHeight + 2}px`;
+      textareaRef.current.style.height = `${
+        textareaRef.current.scrollHeight + 2
+      }px`;
     }
   };
 
@@ -139,7 +141,7 @@ export function MultimodalInput({
         setUploadQueue([]);
       }
     },
-    [setAttachments],
+    [setAttachments]
   );
 
   return (
