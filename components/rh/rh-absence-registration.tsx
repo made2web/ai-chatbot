@@ -75,23 +75,24 @@ export function AbsenceRegistration({
 
   return (
     <Card className="w-[500px]">
-      {submitted ? ( // Mostrar o cartão de confirmação se submetido
-        <AbsenceConfirmation
-          summary={{
-            absence_type: absenceType || "férias", // Passar o tipo de ausência atual
-            start_date: date?.from || new Date(), // Passar a data de início atual
-            end_date: date?.to || new Date(), // Passar a data de fim atual
-          }}
-        />
-      ) : (
-        <>
-          <CardHeader>
+      <CardHeader>
+        {!submitted && (
+          <>
             <CardTitle>Registar Ausência</CardTitle>
             <CardDescription>
               Selecione o tipo e as datas da sua ausência
             </CardDescription>
-          </CardHeader>
-          <CardContent>
+          </>
+        )}
+      </CardHeader>
+      <CardContent>
+        {submitted ? ( // Mover mensagem de sucesso para dentro do CardContent
+          <div className="flex flex-col items-center justify-center space-y-2">
+            <CheckCircle2 className="h-12 w-12 text-green-500" />
+            <span className="text-lg font-semibold">Ausência Submetida</span>
+          </div>
+        ) : (
+          <>
             <div className="grid gap-2">
               <Select value={absenceType} onValueChange={setAbsenceType}>
                 <SelectTrigger className="w-[240px]">
@@ -148,18 +149,21 @@ export function AbsenceRegistration({
                 </PopoverContent>
               </Popover>
             </div>
-          </CardContent>
-          <CardFooter className="flex justify-between">
+          </>
+        )}
+      </CardContent>
+      <CardFooter className="flex justify-between">
+        {!submitted && (
+          <>
             <Button variant="outline" onClick={() => setDate(undefined)}>
               Limpar
             </Button>
             <Button onClick={handleConfirm}>
-              {isSending ? "A enviar..." : "Confirmar"}{" "}
-              {/* Alterar texto do botão */}
+              {isSending ? "A enviar..." : "Confirmar"}
             </Button>
-          </CardFooter>
-        </>
-      )}
+          </>
+        )}
+      </CardFooter>
     </Card>
   );
 }

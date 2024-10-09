@@ -100,7 +100,7 @@ export async function POST(request: Request) {
       },
       sendHRContactForm: {
         description:
-          "Show to the user the contact form to the human resources department from him to validate the fields. Don't mention 'Made2Web' on the extracted data.",
+          "Show to the user the contact form to the human resources department from him to validate the fields and for him to send the email. Don't mention 'Made2Web' on the extracted data.",
         parameters: z.object({
           assunto: z.string().describe("Subject of the email.").optional(),
           message: z
