@@ -10,6 +10,10 @@ import {
   saveChat,
 } from "@/db/queries";
 
+function getCompanyByCAE(cae: string) {
+  return `Company with CAE ${cae} not found`;
+}
+
 export async function POST(request: Request) {
   const { id, messages, selectedFilePathnames } = await request.json();
 
