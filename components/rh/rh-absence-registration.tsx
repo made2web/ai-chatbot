@@ -72,7 +72,7 @@ export function AbsenceRegistration({
   };
 
   return (
-    <Card className="w-[500px]">
+    <Card className="w-full">
       <CardHeader>
         {!submitted && (
           <>
@@ -168,7 +168,7 @@ export function AbsenceRegistration({
 
 export function AbsenceRegistrationSkeleton() {
   return (
-    <Card className="w-[500px]">
+    <Card className="w-full">
       <CardHeader>
         <div className="h-6 bg-gray-300 rounded w-1/2 animate-pulse"></div>
         <div className="h-4 bg-gray-300 rounded w-3/4 mt-2 animate-pulse"></div>
