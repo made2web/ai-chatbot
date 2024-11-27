@@ -55,8 +55,14 @@ export async function POST(request: Request) {
         description:
           "Form to register a new absence for the user. Even if the user does not fill in any fields, we must call the function. We should never show a message saying the registration is done. If this tool is called, we should say that we have started the process and the user must confirm the details. Don't say that you've sent the email or you did another action to the human resources department.",
         parameters: z.object({
-          start_date: z.string().optional(),
-          end_date: z.string().optional(),
+          start_date: z
+            .string()
+            .describe("Start date of the absence. Format: yyyy-mm-dd")
+            .optional(),
+          end_date: z
+            .string()
+            .describe("End date of the absence. Format: yyyy-mm-dd")
+            .optional(),
           absence_type: z
             .enum([
               "férias",
@@ -87,7 +93,7 @@ export async function POST(request: Request) {
               "Invoice value in the PDF in the currency shown in the PDF, do not convert"
             )
             .optional(),
-          date: z.string().describe("Invoice date in the PDF.").optional(),
+          date: z.date().describe("Invoice date in the PDF.").optional(),
           currency: z
             .enum(["EUR", "USD"])
             .describe("Currency of the invoice in the PDF.")
@@ -118,7 +124,12 @@ export async function POST(request: Request) {
         }),
       },
     },
-    onFinish: async ({ text }) => {
+    onStepFinish({ toolResults, usage }) {
+      // // This callback is called after each step
+      // console.log("Step finished:", { toolResults, usage });
+      // // You can save this information to your database or analytics service
+    },
+    onFinish: async ({ text, steps }) => {
       if (session && session.user && session.user.id) {
         await saveChat({
           id,
@@ -126,6 +137,16 @@ export async function POST(request: Request) {
           userId: session.user.id,
         });
       }
+
+      // // This callback is called when the entire generation is complete
+      // console.log("Generation finished. Total steps:", steps.length);
+      // // You can aggregate usage data from all steps here
+      // const totalTokens = steps.reduce(
+      //   (sum, step) => sum + (step.usage?.totalTokens || 0),
+      //   0
+      // );
+      // console.log("Total tokens used:", totalTokens);
+      // // Save this information to your database or analytics service
     },
     experimental_telemetry: {
       isEnabled: true,
