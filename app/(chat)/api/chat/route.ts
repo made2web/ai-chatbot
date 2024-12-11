@@ -79,25 +79,16 @@ export async function POST(request: Request) {
           absence_type,
         }),
       }),
-      readInvoice: {
+      sendInvoice: {
         description:
-          "Read the user's invoice/expense.  The user must verify the extracted information and submit the invoice. Dont say that you've sent the invoice to the human resources department or any other action",
+          "Retrive information from the invoice/expense uploaded by the user and send it to the human resources department. Don't say that you've sent the invoice to the human resources department or any other action",
         parameters: z.object({
           type: z
             .enum(["gasolina", "hotel", "software", "outro"])
-            .describe("Type of invoice in the PDF.")
-            .optional(),
-          value: z
-            .number()
-            .describe(
-              "Invoice value in the PDF in the currency shown in the PDF, do not convert"
-            )
-            .optional(),
-          date: z.date().describe("Invoice date in the PDF.").optional(),
-          currency: z
-            .enum(["EUR", "USD"])
-            .describe("Currency of the invoice in the PDF.")
-            .optional(),
+            .describe("Type of invoice in the uploaded document."),
+          value: z.string().describe("Invoice value."),
+          date: z.string().describe("Invoice date."),
+          currency: z.string().describe("Invoice currency."),
         }),
         execute: async ({ type, value, date, currency }) => ({
           type,

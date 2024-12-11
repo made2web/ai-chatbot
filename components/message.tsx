@@ -74,7 +74,7 @@ export const Message = ({
                       <AbsenceRegistration summary={result} />
                     ) : null}
 
-                    {toolName === "readInvoice" ? (
+                    {toolName === "sendInvoice" ? (
                       <ManageExpenses summary={result} />
                     ) : null}
                     {toolName === "sendHRContactForm" ? (
@@ -100,7 +100,7 @@ export const Message = ({
                       <AbsenceRegistrationSkeleton />
                     ) : null}
 
-                    {toolName === "readInvoice" ? (
+                    {toolName === "sendInvoice" ? (
                       <ManageExpensesSkeleton />
                     ) : null}
                     {toolName === "sendHRContactForm" ? (
