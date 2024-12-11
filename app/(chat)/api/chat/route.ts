@@ -80,15 +80,18 @@ export async function POST(request: Request) {
         }),
       }),
       sendInvoice: {
-        description:
-          "Retrive information from the invoice/expense uploaded by the user and send it to the human resources department. In you response to the user, NEVER say that you've sent the invoice to the human resources department. Always ask for the user to review the extracted information and to confirm the submission of the invoice.",
+        description: `Retrive information from the invoice/expense uploaded by the user and send it to the human resources department.
+        If user does not provide any information or makes an informative question like "can i submit my expenses?", tell that you're happy to help and ask him to upload the invoice.
+        In you response to the user, NEVER say that you've sent the invoice to the human resources department. 
+        Always ask for the user to review the extracted information and to confirm the submission of the invoice.`,
         parameters: z.object({
           type: z
             .enum(["gasolina", "hotel", "software", "outro"])
-            .describe("Type of invoice in the uploaded document."),
-          value: z.string().describe("Invoice value."),
-          date: z.string().describe("Invoice date."),
-          currency: z.string().describe("Invoice currency."),
+            .describe("Type of invoice in the uploaded document.")
+            .optional(),
+          value: z.string().describe("Invoice value.").optional(),
+          date: z.string().describe("Invoice date.").optional(),
+          currency: z.string().describe("Invoice currency.").optional(),
         }),
         execute: async ({ type, value, date, currency }) => ({
           type,
