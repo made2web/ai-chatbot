@@ -81,7 +81,7 @@ export async function POST(request: Request) {
       }),
       sendInvoice: {
         description:
-          "Retrive information from the invoice/expense uploaded by the user and send it to the human resources department. Don't say that you've sent the invoice to the human resources department or any other action",
+          "Retrive information from the invoice/expense uploaded by the user and send it to the human resources department. In you response to the user, NEVER say that you've sent the invoice to the human resources department. Always ask for the user to review the extracted information and to confirm the submission of the invoice.",
         parameters: z.object({
           type: z
             .enum(["gasolina", "hotel", "software", "outro"])
@@ -98,8 +98,9 @@ export async function POST(request: Request) {
         }),
       },
       sendHRContactForm: {
-        description:
-          "Show to the user the contact form to the human resources department from him to validate the fields and for him to send the email. Don't mention 'Made2Web' on the extracted data and don't say that you've sent the email to the human resources department.",
+        description: `Show to the user the contact form to the human resources department from him to validate the fields and for him to send the email. 
+          In your response,  don't mention 'Made2Web' on the extracted data and NEVER say that you've sent the email to the human resources department. 
+          Instead, say that you've written a draft of the email and the user must confirm the details`,
         parameters: z.object({
           assunto: z.string().describe("Subject of the email.").optional(),
           message: z
