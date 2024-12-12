@@ -11,8 +11,18 @@ export async function createTicket(formData: FormData) {
     const title = formData.get("subject") as string;
     const description = formData.get("message") as string;
 
-    const prioridades = Object.values(TicketPriority);
-    const categorias = Object.values(TicketCategory);
+    const prioridades = ["baixa", "média", "alta", "urgente"] as const;
+    const categorias = [
+      "salesforce",
+      "primavera",
+      "consumiveis",
+      "website",
+      "redes",
+      "email",
+      "acessos",
+      "seguranca",
+      "outros",
+    ] as const;
 
     console.log("prioridades", prioridades);
     console.log("categorias", categorias);
