@@ -10,6 +10,7 @@ import {
   text,
   vector,
   index,
+  serial,
 } from "drizzle-orm/pg-core";
 
 export const user = pgTable("User", {
@@ -67,3 +68,66 @@ export const embeddings = pgTable(
     ),
   })
 );
+
+export const TicketStatus = {
+  ABERTO: "aberto",
+  EM_ANDAMENTO: "em_andamento",
+  PENDENTE: "pendente",
+  RESOLVIDO: "resolvido",
+  FECHADO: "fechado",
+} as const;
+
+export type TicketStatus = (typeof TicketStatus)[keyof typeof TicketStatus];
+
+export const TicketPriority = {
+  BAIXA: "baixa",
+  MEDIA: "média",
+  ALTA: "alta",
+  URGENTE: "urgente",
+} as const;
+
+export type TicketPriority =
+  (typeof TicketPriority)[keyof typeof TicketPriority];
+
+export const TicketCategory = {
+  SALESFORCE: "salesforce",
+  PRIMAVERA: "primavera",
+  CONSUMIVEIS: "consumiveis",
+  WEBSITE: "website",
+  REDES: "redes",
+  EMAIL: "email",
+  ACESSOS: "acessos",
+  SEGURANCA: "seguranca",
+  OUTROS: "outros",
+} as const;
+
+export type TicketCategory =
+  (typeof TicketCategory)[keyof typeof TicketCategory];
+
+export const ticket = pgTable("Ticket", {
+  id: uuid("id").primaryKey().notNull().defaultRandom(),
+  ticketNumber: serial("ticket_number").notNull(),
+  title: varchar("title", { length: 255 }).notNull(),
+  description: text("description").notNull(),
+  status: varchar("status", { length: 50 })
+    .notNull()
+    .default(TicketStatus.ABERTO)
+    .$type<TicketStatus>(),
+  priority: varchar("priority", { length: 20 })
+    .notNull()
+    .default(TicketPriority.MEDIA)
+    .$type<TicketPriority>(),
+  category: varchar("category", { length: 100 })
+    .notNull()
+    .default(TicketCategory.OUTROS)
+    .$type<TicketCategory>(),
+  createdAt: timestamp("created_at")
+    .notNull()
+    .default(sql`now()`),
+  updatedAt: timestamp("updated_at")
+    .notNull()
+    .default(sql`now()`),
+  resolvedAt: timestamp("resolved_at"),
+});
+
+export type Ticket = InferSelectModel<typeof ticket>;

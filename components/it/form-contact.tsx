@@ -1,0 +1,128 @@
+"use client";
+
+import { useState } from "react";
+import { Button } from "@/components/shadcn/button";
+import { Input } from "@/components/shadcn/input";
+import { Textarea } from "@/components/shadcn/textarea";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/shadcn/card";
+import { Label } from "@/components/shadcn/label";
+import { sendEmail } from "@/components/rh/sendEmail"; // Importe a função de envio de email
+import { CheckCircle2 } from "lucide-react"; // Importar o ícone de check circle
+import { createTicket } from "@/app/actions/create-ticket";
+
+interface ContactFormProps {
+  initialSubject?: string;
+  initialMessage?: string;
+}
+
+export function ContactForm({
+  initialSubject = "",
+  initialMessage = "",
+}: ContactFormProps) {
+  const [subject, setSubject] = useState(initialSubject);
+  const [message, setMessage] = useState(initialMessage);
+  const [submitted, setSubmitted] = useState(false); // Adicionar estado de submissão
+  const [isSending, setIsSending] = useState(false); // Adicionar estado para controlar o texto do botão
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    setIsSending(true);
+
+    const formData = new FormData();
+    formData.append("subject", subject);
+    formData.append("message", message);
+
+    // Criar o ticket
+    const ticketResponse = await createTicket(formData);
+
+    // Enviar email
+    //const emailResponse = await sendEmail(subject, message);
+
+    if (ticketResponse.success) {
+      setSubmitted(true);
+    } else {
+      console.error("Erro:", ticketResponse.error);
+    }
+
+    setIsSending(false);
+  };
+
+  return (
+    <Card className="w-full">
+      <CardHeader>
+        {!submitted && <CardTitle>Formulário de Contato</CardTitle>}
+      </CardHeader>
+      <CardContent>
+        {submitted ? (
+          <div className="flex flex-col items-center justify-center space-y-2">
+            <CheckCircle2 className="h-12 w-12 text-green-500" />
+            <span className="text-lg font-semibold">
+              Ticket Enviado com Sucesso
+            </span>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <Label htmlFor="subject">Assunto</Label>
+              <Input
+                id="subject"
+                value={subject}
+                onChange={(e) => setSubject(e.target.value)}
+                placeholder="Digite o assunto"
+                required
+              />
+            </div>
+            <div>
+              <Label htmlFor="message">Mensagem</Label>
+              <Textarea
+                id="message"
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                placeholder="Digite sua mensagem"
+                required
+              />
+            </div>
+          </form>
+        )}
+      </CardContent>
+      <CardFooter className="flex justify-end">
+        {!submitted && (
+          <Button type="submit" onClick={handleSubmit} disabled={isSending}>
+            {isSending ? "A enviar..." : "Enviar"}
+          </Button>
+        )}
+      </CardFooter>
+    </Card>
+  );
+}
+
+export function ContactFormSkeleton() {
+  return (
+    <Card className="w-full">
+      <CardHeader>
+        <div className="h-6 bg-gray-300 rounded w-1/2 animate-pulse"></div>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-4">
+          <div>
+            <div className="h-4 bg-gray-300 rounded w-1/3 animate-pulse"></div>
+            <div className="h-10 bg-gray-300 rounded w-full animate-pulse"></div>
+          </div>
+          <div>
+            <div className="h-4 bg-gray-300 rounded w-1/3 animate-pulse"></div>
+            <div className="h-24 bg-gray-300 rounded w-full animate-pulse"></div>
+          </div>
+        </div>
+      </CardContent>
+      <CardFooter className="flex justify-end">
+        <div className="h-10 bg-gray-300 rounded w-1/4 animate-pulse"></div>
+      </CardFooter>
+    </Card>
+  );
+}

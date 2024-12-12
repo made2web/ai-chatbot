@@ -8,6 +8,7 @@ import {
   findRelevantContent,
   getChatById,
   saveChat,
+  getTicketByTicketNumber,
 } from "@/db/queries";
 
 export async function POST(request: Request) {
@@ -18,11 +19,11 @@ export async function POST(request: Request) {
   const result = await streamText({
     model: customModel,
     system: `\
-            You are a friendly human resources assistant at Made2Web company, helping employees answer company-related questions and perform tasks like booking vacations or submitting expense receipts.
+            You are a friendly IT Support assistant at Carmo company, helping employees answer IT related questions and perform tasks like opening a ticket or showing the status of a ticket.
             
             If no relevant information is found in the tool calls:
-            1) respond politely that you do not know the answer and to contact the human resources department
-            2) Call the tool \`sendHRContactForm\`.
+            1) respond politely that you do not know the answer and to contact the IT department
+            2) Call the tool \`openTicket\`.
 
             ALWAYS answer in Portuguese from Portugal.
             
@@ -32,6 +33,8 @@ export async function POST(request: Request) {
               year: "numeric",
             })} so use it to answer the user's question.
 
+            Only reply with information that you have in your knowledge base. If you don't have the answer, call the tool \`openTicket\`.
+
       `,
     messages: convertToCoreMessages(messages),
     experimental_providerMetadata: {
@@ -39,7 +42,7 @@ export async function POST(request: Request) {
         selection: selectedFilePathnames,
       },
     },
-    maxSteps: 2,
+    maxSteps: 3,
     maxRetries: 2,
     temperature: 0,
 
@@ -51,65 +54,16 @@ export async function POST(request: Request) {
         }),
         execute: async ({ question }) => findRelevantContent(question),
       },
-      absenceRegistration: tool({
-        description:
-          "Form to register a new absence for the user. Even if the user does not fill in any fields, we must call the function. We should never show a message saying the registration is done. If this tool is called, we should say that we have started the process and the user must confirm the details. Don't say that you've sent the email or you did another action to the human resources department.",
+      openTicket: {
+        description: `Show to the user the contact form to the IT department from him to validate the fields and for him to send the email. 
+          In your response,  don't mention 'Carmo' on the extracted data and NEVER say that you've sent the email to the IT department.
+          Dont repeat the question or the subject, instead, say that you don't have the answer and you've written a draft of the email and the user must confirm the details`,
         parameters: z.object({
-          start_date: z
-            .string()
-            .describe("Start date of the absence. Format: yyyy-mm-dd")
-            .optional(),
-          end_date: z
-            .string()
-            .describe("End date of the absence. Format: yyyy-mm-dd")
-            .optional(),
-          absence_type: z
-            .enum([
-              "férias",
-              "licenca-parental",
-              "baixa",
-              "falta-justificada",
-              "falta-injustificada",
-            ])
-            .optional(),
-        }),
-        execute: async ({ start_date, end_date, absence_type }) => ({
-          start_date,
-          end_date,
-          absence_type,
-        }),
-      }),
-      sendInvoice: {
-        description: `Retrive information from the invoice/expense uploaded by the user and send it to the human resources department.
-        If user does not provide any information or makes an informative question like "can i submit my expenses?", tell that you're happy to help and ask him to upload the invoice.
-        In you response to the user, NEVER say that you've sent the invoice to the human resources department. 
-        Always ask for the user to review the extracted information and to confirm the submission of the invoice.`,
-        parameters: z.object({
-          type: z
-            .enum(["gasolina", "hotel", "software", "outro"])
-            .describe("Type of invoice in the uploaded document.")
-            .optional(),
-          value: z.string().describe("Invoice value.").optional(),
-          date: z.string().describe("Invoice date.").optional(),
-          currency: z.string().describe("Invoice currency.").optional(),
-        }),
-        execute: async ({ type, value, date, currency }) => ({
-          type,
-          value,
-          date,
-          currency,
-        }),
-      },
-      sendHRContactForm: {
-        description: `Show to the user the contact form to the human resources department from him to validate the fields and for him to send the email. 
-          In your response,  don't mention 'Made2Web' on the extracted data and NEVER say that you've sent the email to the human resources department. 
-          Instead, say that you've written a draft of the email and the user must confirm the details`,
-        parameters: z.object({
-          assunto: z.string().describe("Subject of the email.").optional(),
+          assunto: z.string().describe("The title of the ticket.").optional(),
           message: z
             .string()
             .describe(
-              "User's message. It should be written as if the user is sending the email. It is not necessary to state that it is from Made2Web company."
+              "The description of the ticket. It should be written as if the user is sending the email. It is not necessary to state that it is from Carmo company."
             )
             .optional(),
         }),
@@ -117,6 +71,21 @@ export async function POST(request: Request) {
           assunto,
           message,
         }),
+      },
+      statusTicket: {
+        description: `Check the status of a ticket. If the user asks for the status of a ticket, you must call this tool. If they dont provide the ticket number, you must ask for it.`,
+        parameters: z.object({
+          ticketNumber: z.number().describe("The number of the ticket."),
+        }),
+        execute: async ({ ticketNumber }) =>
+          getTicketByTicketNumber(ticketNumber),
+      },
+      extractErrorFromImage: {
+        description: `Extract the error from the image.`,
+        parameters: z.object({
+          error: z.string().describe("The error message."),
+        }),
+        execute: async ({ error }) => error,
       },
     },
     onStepFinish({ toolResults, usage }) {

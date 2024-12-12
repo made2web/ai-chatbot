@@ -13,9 +13,10 @@ import {
   AbsenceRegistration,
   AbsenceRegistrationSkeleton,
 } from "./rh/rh-absence-registration";
-import { ContactForm, ContactFormSkeleton } from "./rh/form-contact";
+import { ContactForm, ContactFormSkeleton } from "./it/form-contact";
 import ManageExpenses, { ManageExpensesSkeleton } from "./rh/manage-expenses";
 import { Weather } from "./weather";
+import TicketStatusCard from "./it/ticket-status";
 
 export const Message = ({
   role,
@@ -70,18 +71,14 @@ export const Message = ({
 
                 return (
                   <div key={toolCallId}>
-                    {toolName === "absenceRegistration" ? (
-                      <AbsenceRegistration summary={result} />
-                    ) : null}
-
-                    {toolName === "sendInvoice" ? (
-                      <ManageExpenses summary={result} />
-                    ) : null}
-                    {toolName === "sendHRContactForm" ? (
+                    {toolName === "openTicket" ? (
                       <ContactForm
                         initialSubject={result.assunto}
                         initialMessage={result.message}
                       />
+                    ) : null}
+                    {toolName === "statusTicket" ? (
+                      <TicketStatusCard ticket={result.data} />
                     ) : null}
                   </div>
                 );
@@ -95,17 +92,9 @@ export const Message = ({
                         <div className="h-4 bg-gray-300 rounded w-2/3 animate-pulse"></div>
                       </div>
                     ) : null}
-                    {toolName === "absenceRegistration" ? (
-                      // <div>A carregar absenceRegistration...</div>
-                      <AbsenceRegistrationSkeleton />
-                    ) : null}
 
-                    {toolName === "sendInvoice" ? (
-                      <ManageExpensesSkeleton />
-                    ) : null}
-                    {toolName === "sendHRContactForm" ? (
-                      <ContactFormSkeleton />
-                    ) : null}
+                    {toolName === "openTicket" ? <ContactFormSkeleton /> : null}
+                    {toolName === "statusTicket" ? <p>Loading...</p> : null}
                   </div>
                 );
               }

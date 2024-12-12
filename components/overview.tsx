@@ -14,11 +14,11 @@ export const Overview = () => {
       transition={{ delay: 0.5 }}
     >
       <div className="border rounded-lg p-6 flex flex-col gap-4 text-zinc-500 text-sm dark:text-zinc-400 dark:border-zinc-700">
-        <h2 className="text-lg font-semibold">Assistente RH Made2Web</h2>
+        <h2 className="text-lg font-semibold">Assistente IT - Carmo</h2>
         <p>
-          Olá! Sou o assistente virtual da equipa de gestão de recursos humanos
-          da Made2Web. Estou aqui para ajudar nos procedimentos administrativos,
-          como marcar férias, submeter despesas, etc.
+          Olá! Sou o assistente virtual da equipa de IT da Carmo. Estou aqui
+          para ajudar a esclarecer dúvidas e abrir tickets para o nosso
+          departamento.
         </p>
         <p>Comece por fazer uma pergunta.</p>
       </div>

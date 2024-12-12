@@ -2,7 +2,16 @@ import { drizzle } from "drizzle-orm/postgres-js";
 import { cosineDistance, desc, gt, sql, eq } from "drizzle-orm";
 import postgres from "postgres";
 import { genSaltSync, hashSync } from "bcrypt-ts";
-import { user, chat, User, embeddings } from "./schema";
+import {
+  user,
+  chat,
+  User,
+  embeddings,
+  ticket,
+  TicketCategory,
+  TicketPriority,
+  TicketStatus,
+} from "./schema";
 import { openai } from "@ai-sdk/openai";
 import { embed, embedMany } from "ai";
 
@@ -93,3 +102,64 @@ export const findRelevantContent = async (userQuery: string) => {
 
   return similarGuides;
 };
+
+export async function createTicketInDb({
+  title,
+  description,
+  priority,
+  category,
+}: {
+  title: string;
+  description: string;
+  priority: TicketPriority;
+  category: TicketCategory;
+}) {
+  try {
+    console.log("priority", priority);
+    console.log("category", category);
+    const newTicket = await db
+      .insert(ticket)
+      .values({
+        title,
+        description,
+        status: TicketStatus.ABERTO,
+        priority,
+        category,
+      })
+      .returning();
+
+    console.log("Novo ticket criado:", newTicket);
+
+    return { success: true, data: newTicket[0] };
+  } catch (error) {
+    console.error("Erro ao criar ticket:", error);
+    return { success: false, error: "Erro ao criar ticket" };
+  }
+}
+
+export async function getTicketByTicketNumber(ticketNumber: number) {
+  try {
+    const [selectedTicket] = await db
+      .select()
+      .from(ticket)
+      .where(eq(ticket.ticketNumber, ticketNumber));
+
+    if (!selectedTicket) {
+      return {
+        success: false,
+        error: "Ticket não encontrado",
+      };
+    }
+
+    return {
+      success: true,
+      data: selectedTicket,
+    };
+  } catch (error) {
+    console.error("Erro ao buscar ticket:", error);
+    return {
+      success: false,
+      error: "Erro ao buscar ticket",
+    };
+  }
+}
